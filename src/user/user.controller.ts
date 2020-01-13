@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Put, Delete, Body, Param } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { IUser } from "./user.model";
 
@@ -14,22 +14,22 @@ export class UserController {
     }
 
     @Get('/:id')
-    findOneUserByIdController(id: string): Promise<IUser> {
+    findOneUserByIdController(@Param('id') id: string): Promise<IUser> {
         return this.userService.findOneUserByIdService(id);
     }
 
     @Post()
-    createAUserController(user: IUser): Promise<IUser> {
+    createAUserController(@Body() user: IUser): Promise<IUser> {
         return this.userService.createAUserService(user);
     }
 
     @Put('/:id')
-    updateAUserController(id: string, user: IUser): Promise<IUser> {
+    updateAUserController(@Param('id') id: string, @Body() user: IUser): Promise<IUser> {
         return this.userService.upadateAUserService(id, user);
     }
 
     @Delete('/:id')
-    deleteAUserController(id: string): Promise<any> {
+    deleteAUserController(@Param('id') id: any): Promise<any> {
         return this.userService.deleteAUserService(id);
     }
 }

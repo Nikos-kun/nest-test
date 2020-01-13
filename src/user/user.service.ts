@@ -22,7 +22,7 @@ export class UserService {
 
     async findAllUsersService(): Promise<IUser[]> {
         this.logger.log('Try to find all users...');
-        return await this.userModel.find().exec();
+        return await this.userModel.find().exec(); 0
     }
 
     async findOneUserByIdService(id: string): Promise<IUser> {
@@ -40,8 +40,8 @@ export class UserService {
         // Στην επόμενη γραμμή το object: user που μέχρι πρότεινος ήταν αποθηκευμένο απλώς σε μια σταθερά, πλέον θα αποθηκευτεί στην βάση δεδομένων.
         newUser.save();
 
+        return newUser
 
-        return await this.userModel.findById(newUser._id)
     }
 
     async upadateAUserService(id: string, user: IUser): Promise<IUser> {
@@ -66,13 +66,19 @@ export class UserService {
     }
 
     // Πρόσεξε ότι εδώ το Promise υπόσχεται τύπο <any>.
-    async deleteAUserService(id: string): Promise<any> {
+    async deleteAUserService(id: any): Promise<any> {
         this.logger.log('Try to delete a user...');
 
-        await this.userModel.remove(id).exec();
+        let messageOfSuccess = 'Success'
+        let messageOfError = 'Error'
 
-        let messageOfSuccess = 'success'
-        return messageOfSuccess
+        let userToBeDeleted = await this.userModel.findById(id).exec();
+
+        if (userToBeDeleted) {
+            userToBeDeleted.remove()
+            return messageOfSuccess
+        } else {
+            return messageOfError
+        }
     }
-
 }
