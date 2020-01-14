@@ -22,11 +22,6 @@ export class CategoryService {
         return await this.categoryModel.findById(id).exec();
     }
 
-    async findOneCategoryByNameService(categoryName: string): Promise<ICategory[]> {
-        this.logger.log('try to find one category by its name...');
-        return await this.categoryModel.find({ categoryName: categoryName })
-    }
-
     async createOneCategoryService(category: ICategory): Promise<ICategory> {
         this.logger.log('try to create e new category...');
         const newCategory = new this.categoryModel(category);

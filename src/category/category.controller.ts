@@ -34,7 +34,7 @@ export class CategoryController {
 
 
     @Put('/:id')
-    updateCategoryController(@Param('id') id: string, category: ICategory): Promise<ICategory> {
+    updateCategoryController(@Param('id') id: string, @Body() category: ICategory): Promise<ICategory> {
 
         return this.categoryService.updateCategoryService(id, category);
     }

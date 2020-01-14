@@ -2,7 +2,7 @@ import { AuthorService } from "./author.service";
 import { Get, Post, Put, Delete, Controller, Param, Body } from "@nestjs/common";
 import { IAuthor } from "./author.model";
 
-@Controller('controller')
+@Controller('author')
 export class AuthorController {
     constructor(
         private readonly authorService: AuthorService

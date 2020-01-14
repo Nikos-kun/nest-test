@@ -2,8 +2,8 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { IBook } from "./book.model";
 import { Model } from 'mongoose';
-import { CategoryService } from "src/category/category.service";
 import { ICategory } from "src/category/category.model";
+import { IAuthor } from "src/author/author.model";
 
 @Injectable()
 export class BookService {
@@ -13,7 +13,11 @@ export class BookService {
         @InjectModel('Book')
         private readonly bookModel: Model<IBook>,
 
-        private readonly categoryService: CategoryService
+        @InjectModel('Category')
+        private readonly categoryModel: Model<ICategory>,
+
+        @InjectModel('Author')
+        private readonly authorModel: Model<IAuthor>
     ) { }
 
     async findAllBooksService(): Promise<IBook[]> {
@@ -32,13 +36,31 @@ export class BookService {
 
         const newBook = new this.bookModel(book);
 
-        let categoryName = newBook.category[0]
+        // -----------------------------------------------------------------------------------------
 
-        let category = await this.categoryService.findOneCategoryByNameService(categoryName)
 
-        category[0].bookArray.push(newBook)
+        let categoryNameDenExeiSimasia = newBook.category[0].toString()
 
-        await this.categoryService.updateCategoryService(category[0]._id, category[0])
+        let foundCategory = await this.categoryModel.find({ categoryName: categoryNameDenExeiSimasia })
+
+        foundCategory[0].bookArray.push(newBook)
+
+        foundCategory[0].save()
+
+
+        // -----------------------------------------------------------------------------------------
+
+
+        let authorsLastNameDenExeiSimasia = newBook.authorLastName
+
+        let foundAuthor = await this.authorModel.find({ lastName: authorsLastNameDenExeiSimasia })
+
+        foundAuthor[0].bibliography.push(newBook)
+
+        foundAuthor[0].save()
+
+
+        // ----------------------------------------------------------------------------------------
 
         newBook.save();
 
@@ -53,7 +75,8 @@ export class BookService {
         let newBookFromFront = book
 
         oldBookFromDb.title = newBookFromFront.title
-        oldBookFromDb.author = newBookFromFront.author
+        oldBookFromDb.authorFirstName = newBookFromFront.authorFirstName
+        oldBookFromDb.authorLastName = newBookFromFront.authorLastName
         oldBookFromDb.publisher = newBookFromFront.publisher
         oldBookFromDb.releaseDate = newBookFromFront.releaseDate
         oldBookFromDb.category = newBookFromFront.category
